@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-clock-history"></i> Order History</h2>
+<table class="table align-middle table-bordered bg-white rounded shadow-sm">
+  <thead class="table-light">
+    <tr>
+      <th>#Order</th>
+      <th>Date</th>
+      <th>Items</th>
+      <th class="text-center">Image</th>
+      <th class="text-end">Total Paid</th>
+      <th class="text-center">Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td class="fw-bold">#{{ order.id }}</td>
+      <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+      <td>
+        {% for item in order.items.all %}
+          {{ item.product.name }} <span class="text-muted">x{{ item.quantity }}</span>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </td>
+      <td class="text-center">
+        {% with first=order.items.all.0 %}
+          {% if first and first.product.image %}
+            <img src="{{ first.product.image.url }}" alt="Image" width="56" class="rounded shadow-sm">
+          {% else %}
+            <img src="https://via.placeholder.com/56x56?text=No+Image" width="56" class="rounded shadow-sm" alt="No image">
+          {% endif %}
+        {% endwith %}
+      </td>
+      <td class="text-end fw-bold text-success">₹{{ order.total }}</td>
+      <td class="text-center">
+        <a href="{% url 'order_confirmation' order.id %}" class="btn btn-outline-info btn-sm">
+          <i class="bi bi-eye"></i> View
+        </a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6" class="text-center text-muted">No orders yet.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

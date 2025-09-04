@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row py-4">
+  <div class="col-md-6 d-flex justify-content-center">
+    {% if product.image %}
+      <img src="{{ product.image.url }}" class="img-fluid rounded shadow" style="max-height:400px;object-fit:contain;" alt="{{ product.name }}">
+    {% else %}
+      <img src="https://via.placeholder.com/400x400?text=No+Image" class="img-fluid rounded shadow" alt="No image available">
+    {% endif %}
+  </div>
+  <div class="col-md-6">
+    <h2 class="mb-2">{{ product.name }}</h2>
+    <div class="text-secondary mb-2">
+      Category: <span class="badge bg-secondary">{{ product.category.name }}</span>
+      &bull;
+      <small>By <i class="bi bi-person"></i> <b>{{ product.created_by.username }}</b></small>
+    </div>
+    <h4 class="text-success mb-3">₹{{ product.price }}</h4>
+    <p>
+      {% if product.stock > 0 %}
+        <span class="badge bg-success">In Stock: {{ product.stock }}</span>
+      {% else %}
+        <span class="badge bg-danger">Out of Stock</span>
+      {% endif %}
+    </p>
+    <div class="mb-4">{{ product.description }}</div>
+    {% if user.is_authenticated %}
+      <form class="d-flex align-items-center gap-2 mb-3" action="{% url 'add_to_cart' product.id %}" method="post">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control w-auto" style="max-width: 80px;" {% if product.stock == 0 %}disabled{% endif %}>
+        <button type="submit" class="btn btn-primary"
+                {% if product.stock == 0 %}disabled{% endif %}>
+          <i class="bi bi-cart-plus"></i> Add to Cart
+        </button>
+      </form>
+      {% if user.is_admin or user == product.created_by %}
+        <a href="{% url 'product_edit' product.pk %}" class="btn btn-outline-warning me-2 rounded-pill">
+          <i class="bi bi-pencil-square"></i> Edit
+        </a>
+        <a href="{% url 'product_delete' product.pk %}" class="btn btn-outline-danger rounded-pill"
+           onclick="return confirm('Are you sure you want to delete this product?');">
+          <i class="bi bi-trash"></i> Delete
+        </a>
+      {% endif %}
+    {% else %}
+      <div class="alert alert-info mt-3">
+        <a href="{% url 'login' %}" class="btn btn-sm btn-primary">Login</a> to purchase this product.
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

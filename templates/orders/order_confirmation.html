@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center py-5">
+  <h2 class="mb-3 text-success"><i class="bi bi-patch-check"></i> Thank You for Your Order!</h2>
+  <p class="lead">Order <strong>#{{ order.id }}</strong> has been placed successfully!</p>
+  <table class="table mt-4 w-50 mx-auto">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Qty</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in order.items.all %}
+      <tr>
+        <td>{{ item.product.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>₹{{ item.price }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h4 class="mt-4 text-success">Total Paid: ₹{{ order.total }}</h4>
+  <a href="{% url 'product_list' %}" class="btn btn-primary mt-3">Continue Shopping</a>
+</div>
+{% endblock %}
