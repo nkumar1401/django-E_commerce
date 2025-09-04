@@ -1,6 +1,6 @@
 # Django E-commerce
 
-A minimal e-commerce app built with Django and (optionally) React.
+A minimal e-commerce app built with Pure Django 
 
 ## Features
 
